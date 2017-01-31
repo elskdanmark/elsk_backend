@@ -26,7 +26,8 @@
         "willdurand/rest-extra-bundle": "^1.0"
     },
     "require-dev": {
-        "sensio/generator-bundle": "~2.3"
+        "sensio/generator-bundle": "~2.3",
+        "phpunit/phpunit": "5.5.*"
     },
     "scripts": {
         "post-install-cmd": [
