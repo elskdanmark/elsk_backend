@@ -11,16 +11,16 @@ security:
         in_memory:
             memory:
                 users:
-                    restapi:  { password: secretpw, roles: [ 'ROLE_API' ] }
+                    user:  { password: userpass, roles: [ 'ROLE_USER' ] }
+                    admin: { password: adminpass, roles: [ 'ROLE_ADMIN' ] }
 
     firewalls:
         dev:
             pattern:  ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        main:
-            pattern: ^/
+        login:
+            security: false
+
+        secured_area:
             anonymous: ~
-            stateless:  true
-            http_basic:
-                realm: "Demo REST API (username: restapi, password: secretpw)"
