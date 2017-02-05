@@ -1,9 +1,6 @@
-_welcome:
-    pattern:  /
-    defaults:
-        _controller: FrameworkBundle:Redirect:redirect
-        route:
-        permanent: true # this for 301
+user_list:
+    path:      /user
+    defaults:  { _controller: ElskCoreBundle:User:show }
 
 _wdt:
     resource: "@WebProfilerBundle/Resources/config/routing/wdt.xml"
