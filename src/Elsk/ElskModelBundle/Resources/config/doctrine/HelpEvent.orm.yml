@@ -1,0 +1,54 @@
+Elsk\ElskModelBundle\Entity\HelpEvent:
+    type: entity
+    table: help_event
+    uniqueConstraints:
+        city_id:
+            columns:
+                - elsk_city_id
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        duration:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+        startDate:
+            type: date
+            nullable: false
+            column: start_date
+        endDate:
+            type: date
+            nullable: false
+            column: end_date
+        createdAt:
+            type: date
+            nullable: false
+            column: created_at
+        updatedAt:
+            type: date
+            nullable: true
+            column: updated_at
+        deletedAt:
+            type: date
+            nullable: true
+            column: deleted_at
+    manyToOne:
+        elskCity:
+            targetEntity: ElskCity
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                elsk_city_id:
+                    referencedColumnName: id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

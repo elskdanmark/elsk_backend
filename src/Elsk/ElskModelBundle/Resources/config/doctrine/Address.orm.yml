@@ -1,0 +1,58 @@
+Elsk\ElskModelBundle\Entity\Address:
+    type: entity
+    table: address
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        street:
+            type: string
+            nullable: false
+            length: 50
+            options:
+                fixed: false
+        houseNumber:
+            type: string
+            nullable: false
+            length: 3
+            options:
+                fixed: false
+            column: house_number
+        floor:
+            type: string
+            nullable: false
+            length: 10
+            options:
+                fixed: false
+        postCode:
+            type: string
+            nullable: false
+            length: 4
+            options:
+                fixed: false
+            column: post_code
+        town:
+            type: string
+            nullable: false
+            length: 20
+            options:
+                fixed: false
+        createdAt:
+            type: date
+            nullable: false
+            column: created_at
+        updatedAt:
+            type: date
+            nullable: true
+            column: updated_at
+        deletedAt:
+            type: date
+            nullable: true
+            column: deleted_at
+    lifecycleCallbacks: {  }

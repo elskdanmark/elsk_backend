@@ -1,0 +1,70 @@
+Elsk\ElskModelBundle\Entity\HelpTeamMatch:
+    type: entity
+    table: help_team_match
+    uniqueConstraints:
+        schedule_id:
+            columns:
+                - schedule_id
+        recipient_help_id:
+            columns:
+                - help_request_id
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        helpOfferId:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            column: help_offer_id
+        visitDate:
+            type: date
+            nullable: false
+            column: visit_date
+        helpEventId:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            column: help_event_id
+        createdAt:
+            type: date
+            nullable: false
+            column: created_at
+        updatedAt:
+            type: date
+            nullable: true
+            column: updated_at
+        deletedAt:
+            type: date
+            nullable: true
+            column: deleted_at
+    manyToOne:
+        schedule:
+            targetEntity: Schedule
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                schedule_id:
+                    referencedColumnName: id
+            orphanRemoval: false
+        helpRequest:
+            targetEntity: HelpRequest
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                help_request_id:
+                    referencedColumnName: id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

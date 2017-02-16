@@ -1,10 +1,10 @@
-Elsk\ElskModelBundle\Entity\User:
+Elsk\ElskModelBundle\Entity\HelpOffer:
     type: entity
-    table: user
+    table: help_offer
     uniqueConstraints:
-        city_id:
+        user_id:
             columns:
-                - elsk_city_id
+                - user_id
     id:
         id:
             type: integer
@@ -15,51 +15,36 @@ Elsk\ElskModelBundle\Entity\User:
             generator:
                 strategy: IDENTITY
     fields:
-        firstName:
+        transport:
             type: string
             nullable: false
-            length: 50
+            length: 20
             options:
                 fixed: false
-            column: first_name
-        lastName:
+        helpCategory:
             type: string
             nullable: false
-            length: 50
+            length: 1
+            options:
+                fixed: true
+            column: help_category
+        comment:
+            type: text
+            nullable: false
+            length: 65535
             options:
                 fixed: false
-            column: last_name
-        phone:
+        daysAvalaible:
             type: string
             nullable: false
             length: 8
             options:
                 fixed: false
-        email:
-            type: string
+            column: days_avalaible
+        requestDate:
+            type: datetime
             nullable: false
-            length: 100
-            options:
-                fixed: false
-        login:
-            type: string
-            nullable: false
-            length: 50
-            options:
-                fixed: false
-        password:
-            type: string
-            nullable: false
-            length: 100
-            options:
-                fixed: false
-        userType:
-            type: string
-            nullable: false
-            length: 30
-            options:
-                fixed: false
-            column: user_type
+            column: request_date
         createdAt:
             type: date
             nullable: false
@@ -73,32 +58,32 @@ Elsk\ElskModelBundle\Entity\User:
             nullable: true
             column: deleted_at
     manyToOne:
-        elskCity:
-            targetEntity: ElskCity
+        user:
+            targetEntity: User
             cascade: {  }
             fetch: LAZY
             mappedBy: null
             inversedBy: null
             joinColumns:
-                elsk_city_id:
+                user_id:
                     referencedColumnName: id
             orphanRemoval: false
     manyToMany:
-        emailGroup:
-            targetEntity: EmailGroup
+        specialAbility:
+            targetEntity: SpecialAbility
             cascade: {  }
             fetch: LAZY
             mappedBy: null
-            inversedBy: user
+            inversedBy: helpOffer
             joinTable:
-                name: user_email_group
+                name: offer_special_ability
                 joinColumns:
                     -
-                        name: user_id
+                        name: help_offer_id
                         referencedColumnName: id
                 inverseJoinColumns:
                     -
-                        name: email_group_id
+                        name: special_ability_id
                         referencedColumnName: id
             orderBy: null
     lifecycleCallbacks: {  }
