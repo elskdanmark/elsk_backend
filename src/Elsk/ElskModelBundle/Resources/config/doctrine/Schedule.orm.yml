@@ -1,0 +1,28 @@
+Elsk\ElskModelBundle\Entity\Schedule:
+    type: entity
+    table: schedule
+    uniqueConstraints:
+        help_event_id:
+            columns:
+                - help_event_id
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            generator:
+                strategy: IDENTITY
+    manyToOne:
+        helpEvent:
+            targetEntity: HelpEvent
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                help_event_id:
+                    referencedColumnName: id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

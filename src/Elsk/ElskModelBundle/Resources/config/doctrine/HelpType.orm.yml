@@ -1,0 +1,37 @@
+Elsk\ElskModelBundle\Entity\HelpType:
+    type: entity
+    table: help_type
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        helpName:
+            type: string
+            nullable: false
+            length: 30
+            options:
+                fixed: false
+            column: help_name
+        requiredSpecialAbility:
+            type: string
+            nullable: false
+            length: 1
+            options:
+                fixed: true
+            column: required_special_ability
+    manyToMany:
+        helpRequest:
+            targetEntity: HelpRequest
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: helpType
+            inversedBy: null
+            joinTable: null
+            orderBy: null
+    lifecycleCallbacks: {  }

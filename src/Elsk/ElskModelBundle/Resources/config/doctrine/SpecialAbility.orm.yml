@@ -1,0 +1,30 @@
+Elsk\ElskModelBundle\Entity\SpecialAbility:
+    type: entity
+    table: special_ability
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        abilityName:
+            type: string
+            nullable: false
+            length: 30
+            options:
+                fixed: false
+            column: ability_name
+    manyToMany:
+        helpOffer:
+            targetEntity: HelpOffer
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: specialAbility
+            inversedBy: null
+            joinTable: null
+            orderBy: null
+    lifecycleCallbacks: {  }

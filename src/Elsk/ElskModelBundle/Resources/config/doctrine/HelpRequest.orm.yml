@@ -1,0 +1,65 @@
+Elsk\ElskModelBundle\Entity\HelpRequest:
+    type: entity
+    table: help_request
+    uniqueConstraints:
+        user_id:
+            columns:
+                - user_id
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        helpCategory:
+            type: string
+            nullable: false
+            length: 1
+            options:
+                fixed: true
+            column: help_category
+        daysAvailable:
+            type: string
+            nullable: false
+            length: 8
+            options:
+                fixed: false
+            column: days_available
+        requestDate:
+            type: datetime
+            nullable: false
+            column: request_date
+    manyToOne:
+        user:
+            targetEntity: User
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                user_id:
+                    referencedColumnName: id
+            orphanRemoval: false
+    manyToMany:
+        helpType:
+            targetEntity: HelpType
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: helpRequest
+            joinTable:
+                name: request_help_type
+                joinColumns:
+                    -
+                        name: help_request_id
+                        referencedColumnName: id
+                inverseJoinColumns:
+                    -
+                        name: help_type_id
+                        referencedColumnName: id
+            orderBy: null
+    lifecycleCallbacks: {  }

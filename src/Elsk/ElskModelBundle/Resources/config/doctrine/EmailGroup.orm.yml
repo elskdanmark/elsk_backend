@@ -1,0 +1,51 @@
+Elsk\ElskModelBundle\Entity\EmailGroup:
+    type: entity
+    table: email_group
+    uniqueConstraints:
+        city_id:
+            columns:
+                - elsk_city_id
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        groupName:
+            type: string
+            nullable: false
+            length: 50
+            options:
+                fixed: false
+            column: group_name
+        description:
+            type: string
+            nullable: false
+            length: 100
+            options:
+                fixed: false
+    manyToOne:
+        elskCity:
+            targetEntity: ElskCity
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                elsk_city_id:
+                    referencedColumnName: id
+            orphanRemoval: false
+    manyToMany:
+        user:
+            targetEntity: User
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: emailGroup
+            inversedBy: null
+            joinTable: null
+            orderBy: null
+    lifecycleCallbacks: {  }
