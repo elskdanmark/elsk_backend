@@ -34,18 +34,6 @@ Elsk\ElskModelBundle\Entity\HelpTeamMatch:
             options:
                 unsigned: false
             column: help_event_id
-        createdAt:
-            type: date
-            nullable: false
-            column: created_at
-        updatedAt:
-            type: date
-            nullable: true
-            column: updated_at
-        deletedAt:
-            type: date
-            nullable: true
-            column: deleted_at
     manyToOne:
         schedule:
             targetEntity: Schedule

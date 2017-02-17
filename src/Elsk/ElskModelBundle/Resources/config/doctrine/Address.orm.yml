@@ -43,16 +43,4 @@ Elsk\ElskModelBundle\Entity\Address:
             length: 20
             options:
                 fixed: false
-        createdAt:
-            type: date
-            nullable: false
-            column: created_at
-        updatedAt:
-            type: date
-            nullable: true
-            column: updated_at
-        deletedAt:
-            type: date
-            nullable: true
-            column: deleted_at
     lifecycleCallbacks: {  }

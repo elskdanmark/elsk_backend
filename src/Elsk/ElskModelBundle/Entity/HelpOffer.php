@@ -5,10 +5,10 @@ namespace Elsk\ElskModelBundle\Entity;
 /**
  * HelpOffer
  */
-class HelpOffer
+class HelpOffer extends Timestampable
 {
     /**
-     * @var integer
+     * @var integerz
      */
     private $id;
 
@@ -31,26 +31,6 @@ class HelpOffer
      * @var string
      */
     private $daysAvalaible;
-
-    /**
-     * @var \DateTime
-     */
-    private $requestDate;
-
-    /**
-     * @var \DateTime
-     */
-    private $createdAt;
-
-    /**
-     * @var \DateTime
-     */
-    private $updatedAt;
-
-    /**
-     * @var \DateTime
-     */
-    private $deletedAt;
 
     /**
      * @var \Elsk\ElskModelBundle\Entity\User
@@ -200,79 +180,7 @@ class HelpOffer
         return $this->requestDate;
     }
 
-    /**
-     * Set createdAt
-     *
-     * @param \DateTime $createdAt
-     *
-     * @return HelpOffer
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
-     * Get createdAt
-     *
-     * @return \DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * Set updatedAt
-     *
-     * @param \DateTime $updatedAt
-     *
-     * @return HelpOffer
-     */
-    public function setUpdatedAt($updatedAt)
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    /**
-     * Get updatedAt
-     *
-     * @return \DateTime
-     */
-    public function getUpdatedAt()
-    {
-        return $this->updatedAt;
-    }
-
-    /**
-     * Set deletedAt
-     *
-     * @param \DateTime $deletedAt
-     *
-     * @return HelpOffer
-     */
-    public function setDeletedAt($deletedAt)
-    {
-        $this->deletedAt = $deletedAt;
-
-        return $this;
-    }
-
-    /**
-     * Get deletedAt
-     *
-     * @return \DateTime
-     */
-    public function getDeletedAt()
-    {
-        return $this->deletedAt;
-    }
-
-    /**
+   /**
      * Set user
      *
      * @param \Elsk\ElskModelBundle\Entity\User $user

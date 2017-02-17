@@ -1,0 +1,22 @@
+Elsk\ElskModelBundle\Entity\Timestampable:
+    type: mappedSuperclass
+    table: Timestampable
+    id: {  }
+    fields:
+        createdAt:
+            type: datetime
+            scale: 0
+            length: null
+            unique: false
+            nullable: false
+            precision: 0
+            column: create_at
+        updatedAt:
+            type: date
+            nullable: true
+            column: updated_at
+        deletedAt:
+            type: date
+            nullable: true
+            column: deleted_at
+    lifecycleCallbacks: {  }

@@ -45,18 +45,6 @@ Elsk\ElskModelBundle\Entity\HelpOffer:
             type: datetime
             nullable: false
             column: request_date
-        createdAt:
-            type: date
-            nullable: false
-            column: created_at
-        updatedAt:
-            type: date
-            nullable: true
-            column: updated_at
-        deletedAt:
-            type: date
-            nullable: true
-            column: deleted_at
     manyToOne:
         user:
             targetEntity: User

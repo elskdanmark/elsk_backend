@@ -29,16 +29,4 @@ Elsk\ElskModelBundle\Entity\ElskCity:
             type: date
             nullable: false
             column: next_event_date
-        createdAt:
-            type: date
-            nullable: false
-            column: created_at
-        updatedAt:
-            type: date
-            nullable: true
-            column: updated_at
-        deletedAt:
-            type: date
-            nullable: true
-            column: deleted_at
     lifecycleCallbacks: {  }
