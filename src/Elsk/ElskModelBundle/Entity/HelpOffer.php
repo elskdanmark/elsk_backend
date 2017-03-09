@@ -8,7 +8,7 @@ namespace Elsk\ElskModelBundle\Entity;
 class HelpOffer extends Timestampable
 {
     /**
-     * @var integerz
+     * @var integer
      */
     private $id;
 
@@ -31,6 +31,11 @@ class HelpOffer extends Timestampable
      * @var string
      */
     private $daysAvalaible;
+
+	/**
+	 * @var date
+	 */
+	private $requestDate;
 
     /**
      * @var \Elsk\ElskModelBundle\Entity\User
