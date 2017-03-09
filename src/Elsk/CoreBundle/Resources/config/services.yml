@@ -1,2 +1,13 @@
 # app/config/services.yml
 services:
+    wsse.security.authentication.provider:
+        class: Elsk\CoreBundle\Security\Authentication\Provider\WsseProvider
+        arguments:
+            - '' # User Provider
+            - '%kernel.cache_dir%/security/nonces'
+        public: false
+
+    wsse.security.authentication.listener:
+        class: Elsk\CoreBundle\Security\Firewall\WsseListener
+        arguments: ['@security.token_storage', '@security.authentication.manager']
+        public: false

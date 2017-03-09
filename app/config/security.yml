@@ -19,8 +19,7 @@ security:
             pattern:  ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        login:
-            security: false
-
-        secured_area:
-            anonymous: ~
+        wsse_secured:
+            pattern:   ^/api/
+            stateless: true
+            wsse:      true
