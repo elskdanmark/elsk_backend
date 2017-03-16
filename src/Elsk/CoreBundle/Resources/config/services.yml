@@ -3,7 +3,7 @@ services:
     wsse.security.authentication.provider:
         class: Elsk\CoreBundle\Security\Authentication\Provider\WsseProvider
         arguments:
-            - '' # User Provider
+            - 'Elsk\ElskModelBundle\Entity\User' # User Provider
             - '%kernel.cache_dir%/security/nonces'
         public: false
 

@@ -10,7 +10,7 @@ Elsk\ElskModelBundle\Entity\Timestampable:
             unique: false
             nullable: false
             precision: 0
-            column: create_at
+            column: created_at
         updatedAt:
             type: date
             nullable: true
