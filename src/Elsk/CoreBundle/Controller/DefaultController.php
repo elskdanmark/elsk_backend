@@ -6,8 +6,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class DefaultController extends Controller
 {
-    public function indexAction($name)
+    public function indexAction($name=null)
     {
-        return json_encode($name);// $this->render('ElskCoreBundle:Default:index.html.twig', array('name' => $name));
+        return json_encode("Apps Working");
+        // $this->render('ElskCoreBundle:Default:index.html.twig',array('name' => $name));
     }
 }

@@ -41,7 +41,7 @@ Elsk\ElskModelBundle\Entity\User:
             length: 100
             options:
                 fixed: false
-        login:
+        username:
             type: string
             nullable: false
             length: 50
@@ -53,6 +53,10 @@ Elsk\ElskModelBundle\Entity\User:
             length: 100
             options:
                 fixed: false
+        isActive:
+            type: boolean
+            nullable: false
+            column: is_active
         userType:
             type: string
             nullable: false
@@ -60,6 +64,12 @@ Elsk\ElskModelBundle\Entity\User:
             options:
                 fixed: false
             column: user_type
+        role:
+            type: string
+            nullable: false
+            length: 20
+            options:
+                fixed: false
     manyToOne:
         elskCity:
             targetEntity: ElskCity
