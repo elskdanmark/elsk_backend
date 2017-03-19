@@ -6,8 +6,10 @@ use Symfony\Component\HttpFoundation\Response;
 class UserController extends Controller {
 
 	public function showAction(){
-		$response = new Response(json_encode(['users' => 'No users']));
+		$data  = ["data" => ['name' => 'John Doe']];
+		$response = new Response(json_encode($data));
 		$response->headers->set('Content-Type', 'application/json');
+		$response->headers->set('Access-Control-Allow-Origin', '*');
 
 		return $response;
 	}
