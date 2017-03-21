@@ -5,7 +5,9 @@ security:
     role_hierarchy:
         ROLE_ADMIN:       ROLE_USER
         ROLE_API:         ROLE_USER
-        ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+        ROLE_LOCAL_ADMIN: [ROLE_USER, ROLE_LOCAL_ADMIN]
+        ROLE_LOCAL_ADMIN: [ROLE_LOCAL_ADMIN, ROLE_GLOBAL_ADMIN]
+        ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_GLOBAL_ADMIN, ROLE_ALLOWED_TO_SWITCH]
 
     providers:
         in_memory:
@@ -23,4 +25,6 @@ security:
             security: false
 
         secured_area:
-            anonymous: ~
+            - { path: ^/admin, roles: ROLE_LOCAL_ADMIN }
+            - { path: ^/admin/register, roles: ROLE_GLOBAL_ADMIN }
+            

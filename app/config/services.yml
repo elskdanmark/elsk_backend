@@ -1,0 +1,4 @@
+# app/config/services.yml
+services:
+    Utilities:
+        class: Elsk\CoreBundle\Services\Utilities
