@@ -9,7 +9,6 @@ class UserController extends Controller {
 		$data  = ["data" => ['name' => 'John Doe']];
 		$response = new Response(json_encode($data));
 		$response->headers->set('Content-Type', 'application/json');
-		$response->headers->set('Access-Control-Allow-Origin', '*');
 
 		return $response;
 	}
