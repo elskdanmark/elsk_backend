@@ -3,6 +3,11 @@ NelmioApiDocBundle:
   resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
   prefix:   /api/doc
 
+getUser:
+    path:      /getUser/{email}
+    defaults:  { _controller: ElskCoreBundle:User:get }
+    methods:  [GET]
+    
 registerRecipient:
     path:      /register/recipient
     defaults:  { _controller: ElskCoreBundle:User:registerRecipient }

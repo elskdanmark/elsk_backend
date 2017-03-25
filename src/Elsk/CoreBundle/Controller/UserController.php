@@ -8,6 +8,10 @@ class UserController extends Controller {
 	public function showAction(){
 		return new JsonResponse(['users' => 'No users']);
 	}
+	
+	public function get(){
+		return JsonResponse($this->getDoctrine()->getManager()->getRepository('Elsk:ElskModelBundle:Entity:User')->findOneBy(["email"=>$request->request->get('email')]));
+	}
 
 	public function registerRecipient($request){
 		return $this->createUser($request,"Recipient");
@@ -56,8 +60,8 @@ class UserController extends Controller {
 			$em = $this->getDoctrine()->getManager();
 			$em->persist($user);
 			$em->flush();
-		
-			//TODO Setup Email, with a spool to avoid user waiting on email send before response. http://symfony.com/doc/current/email/spool.html 
+			$subject = "Welcome Email";
+			$this->get("Mailer")->sendEmail(["html"=>$this->renderView("Emails/new$type.html.twig",['user'=>$user])],$subject,$user);
 			return new Response("User created");
 		}else
 			return new Response("Most specify, email, password, firstName, lastName and elskCity");
