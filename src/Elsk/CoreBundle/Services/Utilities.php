@@ -1,5 +1,7 @@
 <?php namespace Elsk\CoreBundle\Services;
 
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
 class Utilities extends Controller
 {
 	public function validatePassword($pass){

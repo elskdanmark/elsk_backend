@@ -2,6 +2,7 @@
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Elsk\ElskModelBundle\Entity\User;
 
 class UserController extends Controller {
@@ -9,29 +10,29 @@ class UserController extends Controller {
 		return new JsonResponse(['users' => 'No users']);
 	}
 	
-	public function get(){
+	public function getUserAction(){
 		return JsonResponse($this->getDoctrine()->getManager()->getRepository('Elsk:ElskModelBundle:Entity:User')->findOneBy(["email"=>$request->request->get('email')]));
 	}
 
-	public function registerRecipient($request){
+	public function registerRecipientAction(Request $request){
 		return $this->createUser($request,"Recipient");
 	}
 
-	public function registerVolunteer($request){
+	public function registerVolunteerAction(Request $request){
 		return $this->createUser($request,"Volunteer");
 	}
 
-	public function registerLocalAdmin($request){
+	public function registerLocalAdminAction(Request $request){
 		$this->denyAccessUnlessGranted('ROLE_GLOBAL_ADMIN', null, 'Unable to access this page!');
 		return $this->createUser($request,"LocalAdmin");
 	}
 
-	public function registerGlobalAdmin($request){
+	public function registerGlobalAdminAction(Request $request){
 		$this->denyAccessUnlessGranted('ROLE_GLOBAL_ADMIN', null, 'Unable to access this page!');
 		return $this->createUser($request,"GlobalAdmin");
 	}
 	
-	private function createUser($request,$type){
+	private function createUser(Request $request,$type){
 		$email = $request->request->get('email');
 		$pass = $request->request->get('password');
 		$firstName = $request->request->get('firstName');
@@ -45,7 +46,7 @@ class UserController extends Controller {
 				return new Response("Invalid Password");
 			if(!$util->validateEmail($email))
 				return new Response("Invalid Email");
-			$city = $this->getDoctrine()->getRepository('Elsk:ElskModelBundle:Entity:ElskCity')->findByCityName($cityName);
+			$city = $this->getDoctrine()->getRepository('ElskModelBundle:ElskCity')->findOneBy(["cityName"=>$cityName]);
 			if($city == null)
 				return new Response("Invalid City");
 			
@@ -57,11 +58,16 @@ class UserController extends Controller {
 			$user->setPhone($phone);
 			$user->setUserType($type);
 			$user->setElskCity($city);
+			$user->setElskCity($city);
+			$user->setCreatedAt(new \DateTime());
+			$user->setUpdatedAt(new \DateTime());
+			$user->setLogin("yes");
+			$user->setDeletedAt(null);
 			$em = $this->getDoctrine()->getManager();
 			$em->persist($user);
 			$em->flush();
 			$subject = "Welcome Email";
-			$this->get("Mailer")->sendEmail(["html"=>$this->renderView("Emails/new$type.html.twig",['user'=>$user])],$subject,$user);
+			$this->get("ElskMailer")->sendEmail(["html"=>$this->renderView("Emails/new$type.html.twig",['user'=>$user])],$subject,$user);
 			return new Response("User created");
 		}else
 			return new Response("Most specify, email, password, firstName, lastName and elskCity");

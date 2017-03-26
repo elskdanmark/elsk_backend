@@ -1,5 +1,7 @@
 <?php namespace Elsk\CoreBundle\Services;
 
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
 class Mailer extends Controller
 {
 	public function __construct($mailer){
@@ -14,7 +16,7 @@ class Mailer extends Controller
 	 * @param string $sender
 	 * @return boolean
 	 */
-	public function sendEmail($msg,$subject,Elsk\ElskModelBundle\User $recipient,$sender="info@elskdanmark.dk"){
+	public function sendEmail($msg,$subject,\Elsk\ElskModelBundle\Entity\User $recipient,$sender="info@elskdanmark.dk"){
 		$message = \Swift_Message::newInstance()->setSubject($subject)->setFrom($sender)->setTo($recipient->getEmail())
 		->setBody($msg["html"],'text/html');
 		if(isset($msg["text"]))

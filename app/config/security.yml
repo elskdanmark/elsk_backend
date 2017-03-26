@@ -23,8 +23,11 @@ security:
 
         login:
             security: false
+        default:
+            pattern: ^/
+            anonymous: ~
 
-        secured_area:
-            - { path: ^/admin, roles: ROLE_LOCAL_ADMIN }
-            - { path: ^/admin/register, roles: ROLE_GLOBAL_ADMIN }
+    access_control:
+        - { path: ^/admin, roles: ROLE_LOCAL_ADMIN }
+        - { path: ^/admin/register, roles: ROLE_GLOBAL_ADMIN }
             

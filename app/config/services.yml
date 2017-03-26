@@ -2,3 +2,7 @@
 services:
     Utilities:
         class: Elsk\CoreBundle\Services\Utilities
+
+    ElskMailer:
+        class: Elsk\CoreBundle\Services\Mailer
+        arguments: ['@mailer']

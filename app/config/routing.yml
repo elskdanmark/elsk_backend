@@ -5,7 +5,7 @@ NelmioApiDocBundle:
 
 getUser:
     path:      /getUser/{email}
-    defaults:  { _controller: ElskCoreBundle:User:get }
+    defaults:  { _controller: ElskCoreBundle:User:getUser }
     methods:  [GET]
     
 registerRecipient:
