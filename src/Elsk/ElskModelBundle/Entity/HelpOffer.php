@@ -38,6 +38,11 @@ class HelpOffer extends Timestampable
 	private $requestDate;
 
     /**
+     * @var \DateTime
+     */
+    private $requestDate;
+    
+    /**
      * @var \Elsk\ElskModelBundle\Entity\User
      */
     private $user;

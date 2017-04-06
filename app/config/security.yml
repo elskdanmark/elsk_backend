@@ -5,22 +5,30 @@ security:
 
     role_hierarchy:
         ROLE_API:         ROLE_USER
-        ROLE_ADMIN:       ROLE_USER
-        ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
-
+        ROLE_LOCAL_ADMIN: [ROLE_USER]
+        ROLE_GLOBAL_ADMIN: [ROLE_LOCAL_ADMIN]
+        ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_GLOBAL_ADMIN, ROLE_ALLOWED_TO_SWITCH] 
+        
+        
     providers:
         db_provider:
             entity:
                 class: ElskModelBundle:User
                 property: username
-
     firewalls:
         dev:
             pattern:  ^/(_(profiler|wdt)|css|images|js)/
             security: false
+
+        login:
+            security: false
+    access_control:
+        - { path: ^/admin/register, role: ROLE_GLOBAL_ADMIN }
+        - { path: ^/admin, role: ROLE_LOCAL_ADMIN }
 
         wsse_secured:
             pattern:    ^/
             host:       api\.elsk\.dev
             stateless: true
             wsse:      true
+
