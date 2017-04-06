@@ -7,9 +7,10 @@ use Elsk\ElskModelBundle\Entity\User;
 
 class UserController extends Controller {
 	public function showAction(){
-		return new JsonResponse(['users' => 'No users']);
+
+		return new JsonResponse(["data" => ['name' => 'John Doe']]);
 	}
-	
+  
 	public function getUserAction(){
 		return JsonResponse($this->getDoctrine()->getManager()->getRepository('Elsk:ElskModelBundle:Entity:User')->findOneBy(["email"=>$request->request->get('email')]));
 	}
