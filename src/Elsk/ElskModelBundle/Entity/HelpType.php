@@ -18,7 +18,7 @@ class HelpType extends Timestampable
     private $helpName;
 
     /**
-     * @var string
+     * @var boolean
      */
     private $requiredSpecialAbility;
 
@@ -72,7 +72,7 @@ class HelpType extends Timestampable
     /**
      * Set requiredSpecialAbility
      *
-     * @param string $requiredSpecialAbility
+     * @param boolean $requiredSpecialAbility
      *
      * @return HelpType
      */
@@ -86,7 +86,7 @@ class HelpType extends Timestampable
     /**
      * Get requiredSpecialAbility
      *
-     * @return string
+     * @return boolean
      */
     public function getRequiredSpecialAbility()
     {
@@ -126,5 +126,20 @@ class HelpType extends Timestampable
     {
         return $this->helpRequest;
     }
-}
+    /**
+     * @var \DateTime
+     */
+    private $createdAt;
 
+    /**
+     * @var \DateTime
+     */
+    private $updatedAt;
+
+    /**
+     * @var \DateTime
+     */
+    private $deletedAt;
+
+
+}

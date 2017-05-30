@@ -1,6 +1,8 @@
 <?php
 
 namespace Elsk\ElskModelBundle\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Util\Debug;
 
 /**
  * HelpRequest
@@ -27,6 +29,21 @@ class HelpRequest extends Timestampable
      */
     private $requestDate;
 
+	/**
+	 * @var boolean
+	 */
+	private $hasTools;
+
+	/**
+	 * @var string
+	 */
+	private $toolsNeeded;
+
+	/**
+	 * @var string
+	 */
+	private $specialCare;
+
     /**
      * @var \Elsk\ElskModelBundle\Entity\User
      */
@@ -42,7 +59,8 @@ class HelpRequest extends Timestampable
      */
     public function __construct()
     {
-        $this->helpType = new \Doctrine\Common\Collections\ArrayCollection();
+	    parent::__construct();
+        $this->helpType = new ArrayCollection();
     }
 
     /**
@@ -134,7 +152,7 @@ class HelpRequest extends Timestampable
      *
      * @return HelpRequest
      */
-    public function setUser(\Elsk\ElskModelBundle\Entity\User $user = null)
+    public function setUser(User $user = null)
     {
         $this->user = $user;
 
@@ -158,7 +176,7 @@ class HelpRequest extends Timestampable
      *
      * @return HelpRequest
      */
-    public function addHelpType(\Elsk\ElskModelBundle\Entity\HelpType $helpType)
+    public function addHelpType(HelpType $helpType)
     {
         $this->helpType[] = $helpType;
 
@@ -170,7 +188,7 @@ class HelpRequest extends Timestampable
      *
      * @param \Elsk\ElskModelBundle\Entity\HelpType $helpType
      */
-    public function removeHelpType(\Elsk\ElskModelBundle\Entity\HelpType $helpType)
+    public function removeHelpType(HelpType $helpType)
     {
         $this->helpType->removeElement($helpType);
     }
@@ -184,5 +202,88 @@ class HelpRequest extends Timestampable
     {
         return $this->helpType;
     }
-}
 
+    /**
+     * Set hasTools
+     *
+     * @param boolean $hasTools
+     *
+     * @return HelpRequest
+     */
+    public function setHasTools($hasTools)
+    {
+        $this->hasTools = $hasTools;
+
+        return $this;
+    }
+
+    /**
+     * Get hasTools
+     *
+     * @return boolean
+     */
+    public function getHasTools()
+    {
+        return $this->hasTools;
+    }
+
+    /**
+     * Set toolsNeeded
+     *
+     * @param string $toolsNeeded
+     *
+     * @return HelpRequest
+     */
+    public function setToolsNeeded($toolsNeeded)
+    {
+        $this->toolsNeeded = $toolsNeeded;
+
+        return $this;
+    }
+
+    /**
+     * Get toolsNeeded
+     *
+     * @return string
+     */
+    public function getToolsNeeded()
+    {
+        return $this->toolsNeeded;
+    }
+
+    /**
+     * Set specialCare
+     *
+     * @param string $specialCare
+     *
+     * @return HelpRequest
+     */
+    public function setSpecialCare($specialCare)
+    {
+        $this->specialCare = $specialCare;
+
+        return $this;
+    }
+
+    /**
+     * Get specialCare
+     *
+     * @return string
+     */
+    public function getSpecialCare()
+    {
+        return $this->specialCare;
+    }
+
+	/**
+	 * Check if it requires a special ability
+	 *
+	 * @return bool
+	 */
+	public function requireSpecialAbility(){
+		$specialHelpType = $this->helpType->filter(function ($helpType) {
+			return ($helpType->getRequiredSpecialAbility());
+		});
+		return !($specialHelpType->isEmpty() && $this->hasTools) ;
+	}
+}

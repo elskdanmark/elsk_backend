@@ -34,7 +34,7 @@ Elsk\ElskModelBundle\Entity\HelpOffer:
             length: 65535
             options:
                 fixed: false
-        daysAvalaible:
+        daysAvailable:
             type: string
             nullable: false
             length: 8

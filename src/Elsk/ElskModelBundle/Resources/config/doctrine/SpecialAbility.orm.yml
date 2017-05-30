@@ -18,6 +18,10 @@ Elsk\ElskModelBundle\Entity\SpecialAbility:
             options:
                 fixed: false
             column: ability_name
+        isSpecialAbility:
+            type: boolean
+            nullable: false
+            column: is_special_ability
     manyToMany:
         helpOffer:
             targetEntity: HelpOffer

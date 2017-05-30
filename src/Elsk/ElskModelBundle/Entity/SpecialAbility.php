@@ -1,6 +1,7 @@
 <?php
 
 namespace Elsk\ElskModelBundle\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * SpecialAbility
@@ -16,7 +17,13 @@ class SpecialAbility extends Timestampable
      * @var string
      */
     private $abilityName;
-    /**
+
+	/**
+	 * @var boolean
+	 */
+	private $isSpecialAbility;
+
+	/**
      * @var \Doctrine\Common\Collections\Collection
      */
     private $helpOffer;
@@ -26,7 +33,7 @@ class SpecialAbility extends Timestampable
      */
     public function __construct()
     {
-        $this->helpOffer = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->helpOffer = new ArrayCollection();
     }
 
     /**
@@ -66,11 +73,11 @@ class SpecialAbility extends Timestampable
     /**
      * Add helpOffer
      *
-     * @param \Elsk\ElskModelBundle\Entity\HelpOffer $helpOffer
+     * @param HelpOffer $helpOffer
      *
      * @return SpecialAbility
      */
-    public function addHelpOffer(\Elsk\ElskModelBundle\Entity\HelpOffer $helpOffer)
+    public function addHelpOffer(HelpOffer $helpOffer)
     {
         $this->helpOffer[] = $helpOffer;
 
@@ -80,9 +87,9 @@ class SpecialAbility extends Timestampable
     /**
      * Remove helpOffer
      *
-     * @param \Elsk\ElskModelBundle\Entity\HelpOffer $helpOffer
+     * @param HelpOffer $helpOffer
      */
-    public function removeHelpOffer(\Elsk\ElskModelBundle\Entity\HelpOffer $helpOffer)
+    public function removeHelpOffer(HelpOffer $helpOffer)
     {
         $this->helpOffer->removeElement($helpOffer);
     }
@@ -96,5 +103,28 @@ class SpecialAbility extends Timestampable
     {
         return $this->helpOffer;
     }
-}
 
+    /**
+     * Set isSpecialAbility
+     *
+     * @param boolean $isSpecialAbility
+     *
+     * @return SpecialAbility
+     */
+    public function setIsSpecialAbility($isSpecialAbility)
+    {
+        $this->isSpecialAbility = $isSpecialAbility;
+
+        return $this;
+    }
+
+    /**
+     * Get isSpecialAbility
+     *
+     * @return boolean
+     */
+    public function getIsSpecialAbility()
+    {
+        return $this->isSpecialAbility;
+    }
+}
