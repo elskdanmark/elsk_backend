@@ -1,2 +1,6 @@
 # app/config/services.yml
 services:
+    schedule.assignCategory:
+        class: Elsk\ElskModelBundle\Schedule\UserCategory
+        arguments: ['@doctrine.orm.entity_manager']
+        public: false
