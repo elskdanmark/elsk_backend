@@ -4,9 +4,9 @@ namespace Elsk\ElskModelBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * SpecialAbility
+ * Ability
  */
-class SpecialAbility extends Timestampable
+class Ability extends Timestampable
 {
     /**
      * @var integer
@@ -51,7 +51,7 @@ class SpecialAbility extends Timestampable
      *
      * @param string $abilityName
      *
-     * @return SpecialAbility
+     * @return Ability
      */
     public function setAbilityName($abilityName)
     {
@@ -75,7 +75,7 @@ class SpecialAbility extends Timestampable
      *
      * @param HelpOffer $helpOffer
      *
-     * @return SpecialAbility
+     * @return Ability
      */
     public function addHelpOffer(HelpOffer $helpOffer)
     {
@@ -109,9 +109,9 @@ class SpecialAbility extends Timestampable
      *
      * @param boolean $isSpecialAbility
      *
-     * @return SpecialAbility
+     * @return Ability
      */
-    public function setIsSpecialAbility($isSpecialAbility)
+    public function setSpecialAbility($isSpecialAbility)
     {
         $this->isSpecialAbility = $isSpecialAbility;
 
@@ -123,7 +123,7 @@ class SpecialAbility extends Timestampable
      *
      * @return boolean
      */
-    public function getIsSpecialAbility()
+    public function isSpecialAbility()
     {
         return $this->isSpecialAbility;
     }

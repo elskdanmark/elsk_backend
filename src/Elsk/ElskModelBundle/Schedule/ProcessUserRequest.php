@@ -1,17 +1,22 @@
-<?php namespace Elsk\ElskModelBundle\Schedule;
+<?php
+
+namespace Elsk\ElskModelBundle\Schedule;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityManagerInterface;
+use Elsk\ElskModelBundle\Entity\Ability;
+use Elsk\ElskModelBundle\Entity\HelpOffer;
 use Elsk\ElskModelBundle\Entity\HelpRequest;
+use Elsk\ElskModelBundle\Entity\HelpType;
 use Elsk\ElskModelBundle\Entity\User;
 use Doctrine\Common\Util\Debug;
 
 /**
- * Class UserCategory
+ * Class ProcessUserRequest
  *
  * @package Elsk\ElskModelBundle\Schedule
  */
-class UserCategory {
+class ProcessUserRequest {
 
 	/**
 	 * @const string for help category of type Green
@@ -27,6 +32,35 @@ class UserCategory {
 	 *@const string for help category of type Red
 	 */
 	const HELP_CAT_RED = 'R';
+
+	/**
+	 * @var array.
+	 * @todo quick fix to solve the issue of matching the help request to someone that really do
+	 * need to column in the help to tag the offer that can matches it. otherwise this is irrelevant to matching algo
+	 * and therefore need to deleted
+	 */
+	const HELP_MATCH = [
+		'artisanal' => [
+			'Cleaning inside',
+			'Cleanup in',
+			'Cleanup outside',
+			'Window cleaning',
+			'Gardening',
+			'Laundry',
+			'Grocery shopping',
+			'kitchen Help',
+			'Small repairs and other practical tasks'
+		],
+		'moving' => [
+			'Moving',
+		],
+		'painting' => [
+			'painting',
+		],
+		'computer' => [
+			'computer Help',
+		]
+	];
 
 	/**
 	 * @var ObjectManager
@@ -155,5 +189,35 @@ class UserCategory {
 		if($r){
 			return $r;
 		} else{return NULL;}
+	}
+
+	public function matchHelps(HelpOffer $helpOffer, HelpRequest $helpRequest){
+		$offerNames = $helpOffer->getAbility()
+			->map(
+				function(Ability $ability){
+					return $ability->getAbilityName();
+				})
+			->toArray();
+
+		$helpRequeted = $helpRequest->getHelpType()
+			->map(
+				function(HelpType $helpType){
+					return $helpType->getHelpName();
+				})
+			->toArray();
+
+		foreach($helpRequeted as $request){
+			if($request != self::HELP_MATCH['moving'] &&
+				$request != self::HELP_MATCH['computer'] &&
+				$request != self::HELP_MATCH['painting']) {
+				return true;
+			} else{
+				if(in_array($request, $offerNames)){
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 }

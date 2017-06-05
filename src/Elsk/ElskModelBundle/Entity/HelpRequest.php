@@ -100,25 +100,33 @@ class HelpRequest extends Timestampable
     /**
      * Set daysAvailable
      *
-     * @param string $daysAvailable
+     * @param array $daysAvailable, an array of days of availability
+     * each of 3 characters. e.g [Mon, Wed, Fri, Son]
      *
      * @return HelpRequest
      */
     public function setDaysAvailable($daysAvailable)
     {
-        $this->daysAvailable = $daysAvailable;
+	    $daysAvailable = array_map(function($day){
+		    if(strlen($day) !== 3){
+			    throw new Exception('Invalid Days available Format');
+		    }
+		    return ucfirst($day);
+	    }, $daysAvailable);
 
-        return $this;
+	    $this->daysAvailable = implode(',', $daysAvailable);
+
+	    return $this;
     }
 
     /**
      * Get daysAvailable
      *
-     * @return string
+     * @return array
      */
     public function getDaysAvailable()
     {
-        return $this->daysAvailable;
+	    return explode(',', $this->daysAvailable);
     }
 
     /**

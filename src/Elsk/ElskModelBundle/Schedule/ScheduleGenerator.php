@@ -2,7 +2,12 @@
 
 namespace Elsk\ElskModelBundle\Schedule;
 
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Elsk\CoreBundle\Controller\ScheduleController;
 use Elsk\ElskModelBundle\Entity\HelpEvent;
+use Symfony\Component\VarDumper\VarDumper;
+use Doctrine\Common\Util\Debug;
 
 /**
  * Class Schedule
@@ -21,28 +26,94 @@ class ScheduleGenerator {
 	private $helpOffers;
 
 	private $matrix = [
-		[2, 3, 3],
+/*		[2, 3, 3],
 		[3, 2, 3],
-		[0, 3, 2]
+		[0, 3, 2]*/
 	];
+
+	const HIGH_COST = 999999;
+	/**
+	 * @var EntityManagerInterface
+	 */
+	private $entityManager;
+	/**
+	 * @var ProcessUserRequest
+	 */
+	private $processUserRequest;
 
 	/**
 	 * @param HelpEvent $helpEvent
+	 * @param ProcessUserRequest $processUserRequest
+	 * @param EntityManagerInterface $entityManager
 	 */
-	public function __construct(/*HelpEvent $helpEvent*/){
-		//$this->helpEvent =  $helpEvent;
-
+	public function __construct(HelpEvent $helpEvent, ProcessUserRequest $processUserRequest, EntityManagerInterface $entityManager){
+		$this->helpEvent =  $helpEvent;
+		$this->entityManager = $entityManager;
+		$this->processUserRequest = $processUserRequest;
 	}
 
 	/**
 	 *
 	 */
-	private function getAllEventHelpRequest(){
-
+	private function getAllEventRequest($entityName){
+		$entity = 'ElskModelBundle:'.$entityName;
+		$previousEvent = $this->getPreviousEvent();
+		$beginDate = $previousEvent? $previousEvent->getEndDate()->format(ScheduleController::MYSQL_DATE_FORMAT) : '0';
+		$qb = $this->entityManager->createQueryBuilder();
+		$query = $qb->select('r')
+			->from($entity, 'r')
+			->where($qb->expr()->between('r.requestDate', '?1', '?2'))
+			->setParameters([1 => $beginDate, 2 => $this->helpEvent->getStartDate()])
+			->getQuery();
+		return $query->getResult();
 	}
 
-	private function getAllEventHelpOffer(){
+	private function getPreviousEvent(){
+		$qb = $this->entityManager->createQueryBuilder();
+		$query = $qb->select('e')
+			->from('ElskModelBundle:HelpEvent', 'e')
+			->where($qb->expr()->lt('e.startDate', '?1'))
+			->orderBy('e.startDate', 'DESC')
+			->setParameter(1, $this->helpEvent->getStartDate())
+			->setMaxResults(1)
+			->getQuery();
 
+		return $query->getOneOrNullResult();
+	}
+
+	public function getAllEventHelpRequest(){
+		return $this->getAllEventRequest('HelpRequest');;
+	}
+
+	public function createCostMatrix(){
+		$helpOffers = $this->entityManager
+			->getRepository('ElskModelBundle:HelpOffer')
+			->findAll();
+		$currentHelpRequests = $this->getAllEventHelpRequest();
+		VarDumper::dump($helpOffers);
+		VarDumper::dump($currentHelpRequests);
+		$i = 0;
+		foreach($helpOffers as $helpOffer){
+			if(empty($helpOffer->getHelpCategory())) $helpOffer->assignCategory();
+			$j = 0;
+			foreach($currentHelpRequests as $helpRequest){
+				$commonAvailability = array_intersect($helpRequest->getDaysAvailable(), $helpOffer->getDaysAvailable());
+
+				$helpMatch = $this->processUserRequest->matchHelps($helpOffer, $helpRequest);
+
+				if(!empty($commonAvailability) && $helpMatch){
+					if($helpRequest->getHelpCategory() === $helpOffer->getHelpCategory()) {
+						$this->matrix[$i][$j++] = 1;
+					}
+				} else {
+					$this->matrix[$i][$j++] = self::HIGH_COST;
+				}
+			}
+
+			$i++;
+		}
+
+		return $this->matrix;
 	}
 
 	public function custom_hungarian($matrix = [])

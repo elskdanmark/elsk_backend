@@ -1,7 +1,9 @@
 <?php
 
 namespace Elsk\ElskModelBundle\Entity;
+
 use Doctrine\Common\Collections\ArrayCollection;
+use Elsk\ElskModelBundle\Schedule\ProcessUserRequest;
 
 /**
  * HelpOffer
@@ -46,14 +48,14 @@ class HelpOffer extends Timestampable
 	/**
 	 * @var \Doctrine\Common\Collections\Collection
 	 */
-	private $specialAbility;
+	private $ability;
 
 	/**
 	 * Constructor
 	 */
 	public function __construct()
 	{
-		$this->specialAbility = new ArrayCollection();
+		$this->ability = new ArrayCollection();
 	}
 
 	/**
@@ -141,13 +143,21 @@ class HelpOffer extends Timestampable
 	/**
 	 * Set daysAvalaible
 	 *
-	 * @param string $daysAvailable
+	 * @param array $daysAvailable, an array of days of availability
+	 * each of 3 characters. e.g [Mon, Wed, Fri, Son]
 	 *
 	 * @return HelpOffer
 	 */
-	public function setDaysAvalaible($daysAvailable)
+	public function setDaysAvailable($daysAvailable)
 	{
-		$this->daysAvailable = $daysAvailable;
+		$daysAvailable = array_map(function($day){
+			if(strlen($day) !== 3){
+				throw new Exception('Invalid Days available Format');
+			}
+			return ucfirst($day);
+		}, $daysAvailable);
+
+		$this->daysAvailable = implode(',', $daysAvailable);
 
 		return $this;
 	}
@@ -155,11 +165,11 @@ class HelpOffer extends Timestampable
 	/**
 	 * Get daysAvailable
 	 *
-	 * @return string
+	 * @return array
 	 */
 	public function getDaysAvailable()
 	{
-		return $this->daysAvailable;
+		return explode(',', $this->daysAvailable);
 	}
 
 	/**
@@ -211,43 +221,54 @@ class HelpOffer extends Timestampable
 	}
 
 	/**
-	 * Add specialAbility
+	 * Add ability
 	 *
-	 * @param SpecialAbility $specialAbility
+	 * @param Ability $ability
 	 *
 	 * @return HelpOffer
 	 */
-	public function addSpecialAbility(SpecialAbility $specialAbility)
+	public function addAbility(Ability $ability)
 	{
-		$this->specialAbility[] = $specialAbility;
+		$this->ability[] = $ability;
 
 		return $this;
 	}
 
 	/**
-	 * Remove specialAbility
+	 * Remove ability
 	 *
-	 * @param SpecialAbility $specialAbility
+	 * @param Ability $ability
 	 */
-	public function removeSpecialAbility(SpecialAbility $specialAbility)
+	public function removeAbility(Ability $ability)
 	{
-		$this->specialAbility->removeElement($specialAbility);
+		$this->ability->removeElement($ability);
 	}
 
 	/**
-	 * Get specialAbility
+	 * Get ability
 	 *
 	 * @return \Doctrine\Common\Collections\Collection
 	 */
-	public function getSpecialAbility()
+	public function getAbility()
 	{
-		return $this->specialAbility;
+		return $this->ability;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function canBeYellowCategory(){
-		$specialHelpOffer = $this->specialAbility->filter(function ($ability) {
-			return ($ability->getIsSpecialAbility());
+		$specialHelpOffer = $this->ability->filter(function (Ability $ability) {
+			return ($ability->isSpecialAbility());
 		});
 		return !($specialHelpOffer->isEmpty()) ;
+	}
+
+	public function assignCategory(){
+		$this->canBeYellowCategory()?
+			$this->setHelpCategory(ProcessUserRequest::HELP_CAT_YELLOW)
+		:
+			$this->setHelpCategory(ProcessUserRequest::HELP_CAT_GREEN);
+
 	}
 }
