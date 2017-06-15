@@ -10,7 +10,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class User extends Timestampable implements UserInterface, \Serializable
 {
-	const USER_TYPE = ['ADMIN', 'USER', 'SUPER_ADMIN'];
+	const USER_TYPE = ['ADMIN', 'SUPER_ADMIN', 'RECIPIENT', 'VOLUNTEER'];
     /**
      * @var integer
      */
@@ -81,7 +81,9 @@ class User extends Timestampable implements UserInterface, \Serializable
 	    parent::__construct();
         $this->emailGroup = new ArrayCollection();
 	    $this->isActive = true;
-	    $this->role = (in_array($userType, USER_TYPE))? 'ROLE_'.$userType : 'ROLE_USER';
+	    $this->role = (in_array($userType, self::USER_TYPE) && ($userType === self::USER_TYPE[0] ||  $userType ===
+    self::USER_TYPE[1]))? 'ROLE_'.$userType :
+	    'ROLE_USER';
 	    $this->userType = $userType;
     }
 

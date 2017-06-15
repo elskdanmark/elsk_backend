@@ -3,6 +3,10 @@ NelmioApiDocBundle:
   resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
   prefix:   /api/doc
 
+schedule:
+    path:      /schedule
+    defaults:  { _controller: ElskCoreBundle:Schedule:index }
+
 getUser:
     path:      /getUser/{email}
     defaults:  { _controller: ElskCoreBundle:User:getUser }

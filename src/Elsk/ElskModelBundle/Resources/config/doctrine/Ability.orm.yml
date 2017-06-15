@@ -1,6 +1,6 @@
-Elsk\ElskModelBundle\Entity\SpecialAbility:
+Elsk\ElskModelBundle\Entity\Ability:
     type: entity
-    table: special_ability
+    table: ability
     id:
         id:
             type: integer
@@ -18,12 +18,16 @@ Elsk\ElskModelBundle\Entity\SpecialAbility:
             options:
                 fixed: false
             column: ability_name
+        isSpecialAbility:
+            type: boolean
+            nullable: false
+            column: is_special_ability
     manyToMany:
         helpOffer:
             targetEntity: HelpOffer
             cascade: {  }
             fetch: LAZY
-            mappedBy: specialAbility
+            mappedBy: ability
             inversedBy: null
             joinTable: null
             orderBy: null

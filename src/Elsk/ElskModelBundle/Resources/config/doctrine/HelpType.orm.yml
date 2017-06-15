@@ -19,11 +19,8 @@ Elsk\ElskModelBundle\Entity\HelpType:
                 fixed: false
             column: help_name
         requiredSpecialAbility:
-            type: string
+            type: boolean
             nullable: false
-            length: 1
-            options:
-                fixed: true
             column: required_special_ability
     manyToMany:
         helpRequest:

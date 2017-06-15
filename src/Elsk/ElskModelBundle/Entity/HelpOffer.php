@@ -2,250 +2,273 @@
 
 namespace Elsk\ElskModelBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Elsk\ElskModelBundle\Schedule\ProcessUserRequest;
+
 /**
  * HelpOffer
  */
 class HelpOffer extends Timestampable
 {
-    /**
-     * @var integer
-     */
-    private $id;
+	/**
+	 * @var integer
+	 */
+	private $id;
 
-    /**
-     * @var string
-     */
-    private $transport;
+	/**
+	 * @var string
+	 */
+	private $transport;
 
-    /**
-     * @var string
-     */
-    private $helpCategory;
+	/**
+	 * @var string
+	 */
+	private $helpCategory;
 
-    /**
-     * @var string
-     */
-    private $comment;
+	/**
+	 * @var string
+	 */
+	private $comment;
 
-    /**
-     * @var string
-     */
-    private $daysAvalaible;
+	/**
+	 * @var string
+	 */
+	private $daysAvailable;
 
 	/**
 	 * @var date
 	 */
 	private $requestDate;
 
-    /**
-     * @var \DateTime
-     */
-    private $requestDate;
-    
-    /**
-     * @var \Elsk\ElskModelBundle\Entity\User
-     */
-    private $user;
+	/**
+	 * @var User
+	 */
+	private $user;
 
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $specialAbility;
+	/**
+	 * @var \Doctrine\Common\Collections\Collection
+	 */
+	private $ability;
 
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->specialAbility = new \Doctrine\Common\Collections\ArrayCollection();
-    }
+	/**
+	 * Constructor
+	 */
+	public function __construct()
+	{
+		$this->ability = new ArrayCollection();
+	}
 
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
+	/**
+	 * Get id
+	 *
+	 * @return integer
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
 
-    /**
-     * Set transport
-     *
-     * @param string $transport
-     *
-     * @return HelpOffer
-     */
-    public function setTransport($transport)
-    {
-        $this->transport = $transport;
+	/**
+	 * Set transport
+	 *
+	 * @param string $transport
+	 *
+	 * @return HelpOffer
+	 */
+	public function setTransport($transport)
+	{
+		$this->transport = $transport;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Get transport
-     *
-     * @return string
-     */
-    public function getTransport()
-    {
-        return $this->transport;
-    }
+	/**
+	 * Get transport
+	 *
+	 * @return string
+	 */
+	public function getTransport()
+	{
+		return $this->transport;
+	}
 
-    /**
-     * Set helpCategory
-     *
-     * @param string $helpCategory
-     *
-     * @return HelpOffer
-     */
-    public function setHelpCategory($helpCategory)
-    {
-        $this->helpCategory = $helpCategory;
+	/**
+	 * Set helpCategory
+	 *
+	 * @param string $helpCategory
+	 *
+	 * @return HelpOffer
+	 */
+	public function setHelpCategory($helpCategory)
+	{
+		$this->helpCategory = $helpCategory;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Get helpCategory
-     *
-     * @return string
-     */
-    public function getHelpCategory()
-    {
-        return $this->helpCategory;
-    }
+	/**
+	 * Get helpCategory
+	 *
+	 * @return string
+	 */
+	public function getHelpCategory()
+	{
+		return $this->helpCategory;
+	}
 
-    /**
-     * Set comment
-     *
-     * @param string $comment
-     *
-     * @return HelpOffer
-     */
-    public function setComment($comment)
-    {
-        $this->comment = $comment;
+	/**
+	 * Set comment
+	 *
+	 * @param string $comment
+	 *
+	 * @return HelpOffer
+	 */
+	public function setComment($comment)
+	{
+		$this->comment = $comment;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Get comment
-     *
-     * @return string
-     */
-    public function getComment()
-    {
-        return $this->comment;
-    }
+	/**
+	 * Get comment
+	 *
+	 * @return string
+	 */
+	public function getComment()
+	{
+		return $this->comment;
+	}
 
-    /**
-     * Set daysAvalaible
-     *
-     * @param string $daysAvalaible
-     *
-     * @return HelpOffer
-     */
-    public function setDaysAvalaible($daysAvalaible)
-    {
-        $this->daysAvalaible = $daysAvalaible;
+	/**
+	 * Set daysAvalaible
+	 *
+	 * @param array $daysAvailable, an array of days of availability
+	 * each of 3 characters. e.g [Mon, Wed, Fri, Son]
+	 *
+	 * @return HelpOffer
+	 */
+	public function setDaysAvailable($daysAvailable)
+	{
+		$daysAvailable = array_map(function($day){
+			if(strlen($day) !== 3){
+				throw new Exception('Invalid Days available Format');
+			}
+			return ucfirst($day);
+		}, $daysAvailable);
 
-        return $this;
-    }
+		$this->daysAvailable = implode(',', $daysAvailable);
 
-    /**
-     * Get daysAvalaible
-     *
-     * @return string
-     */
-    public function getDaysAvalaible()
-    {
-        return $this->daysAvalaible;
-    }
+		return $this;
+	}
 
-    /**
-     * Set requestDate
-     *
-     * @param \DateTime $requestDate
-     *
-     * @return HelpOffer
-     */
-    public function setRequestDate($requestDate)
-    {
-        $this->requestDate = $requestDate;
+	/**
+	 * Get daysAvailable
+	 *
+	 * @return array
+	 */
+	public function getDaysAvailable()
+	{
+		return explode(',', $this->daysAvailable);
+	}
 
-        return $this;
-    }
+	/**
+	 * Set requestDate
+	 *
+	 * @param \DateTime $requestDate
+	 *
+	 * @return HelpOffer
+	 */
+	public function setRequestDate($requestDate)
+	{
+		$this->requestDate = $requestDate;
 
-    /**
-     * Get requestDate
-     *
-     * @return \DateTime
-     */
-    public function getRequestDate()
-    {
-        return $this->requestDate;
-    }
+		return $this;
+	}
 
-   /**
-     * Set user
-     *
-     * @param \Elsk\ElskModelBundle\Entity\User $user
-     *
-     * @return HelpOffer
-     */
-    public function setUser(\Elsk\ElskModelBundle\Entity\User $user = null)
-    {
-        $this->user = $user;
+	/**
+	 * Get requestDate
+	 *
+	 * @return \DateTime
+	 */
+	public function getRequestDate()
+	{
+		return $this->requestDate;
+	}
 
-        return $this;
-    }
+	/**
+	 * Set user
+	 *
+	 * @param User $user
+	 *
+	 * @return HelpOffer
+	 */
+	public function setUser(User $user = null)
+	{
+		$this->user = $user;
 
-    /**
-     * Get user
-     *
-     * @return \Elsk\ElskModelBundle\Entity\User
-     */
-    public function getUser()
-    {
-        return $this->user;
-    }
+		return $this;
+	}
 
-    /**
-     * Add specialAbility
-     *
-     * @param \Elsk\ElskModelBundle\Entity\SpecialAbility $specialAbility
-     *
-     * @return HelpOffer
-     */
-    public function addSpecialAbility(\Elsk\ElskModelBundle\Entity\SpecialAbility $specialAbility)
-    {
-        $this->specialAbility[] = $specialAbility;
+	/**
+	 * Get user
+	 *
+	 * @return User
+	 */
+	public function getUser()
+	{
+		return $this->user;
+	}
 
-        return $this;
-    }
+	/**
+	 * Add ability
+	 *
+	 * @param Ability $ability
+	 *
+	 * @return HelpOffer
+	 */
+	public function addAbility(Ability $ability)
+	{
+		$this->ability[] = $ability;
 
-    /**
-     * Remove specialAbility
-     *
-     * @param \Elsk\ElskModelBundle\Entity\SpecialAbility $specialAbility
-     */
-    public function removeSpecialAbility(\Elsk\ElskModelBundle\Entity\SpecialAbility $specialAbility)
-    {
-        $this->specialAbility->removeElement($specialAbility);
-    }
+		return $this;
+	}
 
-    /**
-     * Get specialAbility
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getSpecialAbility()
-    {
-        return $this->specialAbility;
-    }
+	/**
+	 * Remove ability
+	 *
+	 * @param Ability $ability
+	 */
+	public function removeAbility(Ability $ability)
+	{
+		$this->ability->removeElement($ability);
+	}
+
+	/**
+	 * Get ability
+	 *
+	 * @return \Doctrine\Common\Collections\Collection
+	 */
+	public function getAbility()
+	{
+		return $this->ability;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function canBeYellowCategory(){
+		$specialHelpOffer = $this->ability->filter(function (Ability $ability) {
+			return ($ability->isSpecialAbility());
+		});
+		return !($specialHelpOffer->isEmpty()) ;
+	}
+
+	public function assignCategory(){
+		$this->canBeYellowCategory()?
+			$this->setHelpCategory(ProcessUserRequest::HELP_CAT_YELLOW)
+		:
+			$this->setHelpCategory(ProcessUserRequest::HELP_CAT_GREEN);
+
+	}
 }
-

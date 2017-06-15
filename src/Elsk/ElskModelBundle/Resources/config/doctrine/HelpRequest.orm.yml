@@ -25,7 +25,7 @@ Elsk\ElskModelBundle\Entity\HelpRequest:
         daysAvailable:
             type: string
             nullable: false
-            length: 8
+            length: 50
             options:
                 fixed: false
             column: days_available
@@ -33,6 +33,24 @@ Elsk\ElskModelBundle\Entity\HelpRequest:
             type: datetime
             nullable: false
             column: request_date
+        hasTools:
+            type: boolean
+            nullable: false
+            column: has_tools
+        toolsNeeded:
+            type: text
+            nullable: true
+            length: 65535
+            options:
+                fixed: false
+            column: tools_needed
+        specialCare:
+            type: text
+            nullable: true
+            length: 65535
+            options:
+                fixed: false
+            column: special_care
     manyToOne:
         user:
             targetEntity: User
