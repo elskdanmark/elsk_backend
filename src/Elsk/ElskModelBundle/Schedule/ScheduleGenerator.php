@@ -21,25 +21,51 @@ class ScheduleGenerator {
 	 */
 	private $helpEvent;
 
+	/**
+	 * @var
+	 */
 	private $helpRequests;
 
+	/**
+	 * @var
+	 */
 	private $helpOffers;
 
+	/**
+	 * @var array
+	 */
 	private $matrix = [
 /*		[2, 3, 3],
 		[3, 2, 3],
 		[0, 3, 2]*/
 	];
 
+	private $teamMaxSize = 3;
+
+	/**
+	 *
+	 */
 	const HIGH_COST = 999999;
+
 	/**
 	 * @var EntityManagerInterface
 	 */
 	private $entityManager;
+
 	/**
 	 * @var ProcessUserRequest
 	 */
-	private $processUserRequest;
+	private $procUserReq;
+
+	/**
+	 * @var array
+	 */
+	private $volunteerMap = [];
+
+	/**
+	 * @var array
+	 */
+	private $recipientMap = [];
 
 	/**
 	 * @param HelpEvent $helpEvent
@@ -49,14 +75,18 @@ class ScheduleGenerator {
 	public function __construct(HelpEvent $helpEvent, ProcessUserRequest $processUserRequest, EntityManagerInterface $entityManager){
 		$this->helpEvent =  $helpEvent;
 		$this->entityManager = $entityManager;
-		$this->processUserRequest = $processUserRequest;
+		$this->procUserReq = $processUserRequest;
 	}
 
 	/**
+	 * Get all current requests by request type. i.e all the request made between the start date of the previous event
+	 * and the start date of the current event $this->HelpEvent
 	 *
+	 * @param string $reqType, the class name of the request type. either : HelpRequest or HelpOffer
+	 * @return array, list of Request of the type specified by $reqType
 	 */
-	private function getAllEventRequest($entityName){
-		$entity = 'ElskModelBundle:'.$entityName;
+	private function getAllCurRequests($reqType){
+		$entity = 'ElskModelBundle:'.$reqType;
 		$previousEvent = $this->getPreviousEvent();
 		$beginDate = $previousEvent? $previousEvent->getEndDate()->format(ScheduleController::MYSQL_DATE_FORMAT) : '0';
 		$qb = $this->entityManager->createQueryBuilder();
@@ -65,9 +95,16 @@ class ScheduleGenerator {
 			->where($qb->expr()->between('r.requestDate', '?1', '?2'))
 			->setParameters([1 => $beginDate, 2 => $this->helpEvent->getStartDate()])
 			->getQuery();
+
 		return $query->getResult();
 	}
 
+	/**
+	 * Get the previous Event
+	 *
+	 * @return mixed
+	 * @throws NonUniqueResultException
+	 */
 	private function getPreviousEvent(){
 		$qb = $this->entityManager->createQueryBuilder();
 		$query = $qb->select('e')
@@ -81,42 +118,92 @@ class ScheduleGenerator {
 		return $query->getOneOrNullResult();
 	}
 
+	/**
+	 * Get all help requests specific to $this->HelpEvent. ie made between start date of previous HelpEvent and the
+	 * startDate of the current HelpEvent
+	 *
+	 * @return array, list of HelpRequest
+	 */
 	public function getAllEventHelpRequest(){
-		return $this->getAllEventRequest('HelpRequest');;
+		return $this->getAllCurRequests('HelpRequest');;
 	}
 
+	/**
+	 * @param $recipientCat
+	 * @param $volunteerCat
+	 * @return int
+	 */
+	public function getCost($recipientCat, $volunteerCat){
+		$catPriority = [
+			ProcessUserRequest::HELP_CAT_GREEN => 0,
+			ProcessUserRequest::HELP_CAT_YELLOW => 1,
+			ProcessUserRequest::HELP_CAT_RED => 2
+		];
+
+		if($recipientCat === $volunteerCat) {
+			return 1;
+		}
+
+		if($catPriority[$recipientCat] === $catPriority[$volunteerCat] - 1){
+			return 2;
+		}
+
+		if($catPriority[$recipientCat] === $catPriority[$volunteerCat] - 2){
+			return 3;
+		}
+
+		return self::HIGH_COST;
+	}
+
+	/**
+	 * Initialise the cost matrix to supplier to hungarian algorithm
+	 *
+	 * @return array
+	 */
 	public function createCostMatrix(){
 		$helpOffers = $this->entityManager
 			->getRepository('ElskModelBundle:HelpOffer')
 			->findAll();
-		$currentHelpRequests = $this->getAllEventHelpRequest();
-		VarDumper::dump($helpOffers);
-		VarDumper::dump($currentHelpRequests);
+
+		$curHelpReqs = $this->getAllEventHelpRequest();
 		$i = 0;
 		foreach($helpOffers as $helpOffer){
-			if(empty($helpOffer->getHelpCategory())) $helpOffer->assignCategory();
+			if(empty($helpOffer->getHelpCategory())) {
+				$this->procUserReq->assignHelpOfferCat($helpOffer);
+			}
 			$j = 0;
-			foreach($currentHelpRequests as $helpRequest){
-				$commonAvailability = array_intersect($helpRequest->getDaysAvailable(), $helpOffer->getDaysAvailable());
+			$this->volunteerMap[$i] = $helpOffer->getUser()->getId();
+			foreach($curHelpReqs as $helpReq){
+				if(empty($helpReq->getHelpCategory())) {
+					$this->procUserReq->assignHelpReqCat($helpReq);
+				}
 
-				$helpMatch = $this->processUserRequest->matchHelps($helpOffer, $helpRequest);
-
-				if(!empty($commonAvailability) && $helpMatch){
-					if($helpRequest->getHelpCategory() === $helpOffer->getHelpCategory()) {
-						$this->matrix[$i][$j++] = 1;
+				$commonAvailability = array_intersect($helpReq->getDaysAvailable(), $helpOffer->getDaysAvailable());
+				$helpMatch = $this->procUserReq->matchHelps($helpOffer, $helpReq);
+				for($k = 0; $k < $this->teamMaxSize; $k++){
+					if(!isset($this->recipientMap[$j])){
+						$this->recipientMap[$j] = $helpReq->getUser()->getId();
 					}
-				} else {
-					$this->matrix[$i][$j++] = self::HIGH_COST;
+					if(!empty($commonAvailability) && $helpMatch){
+						$this->matrix[$i][$j++] = $this->getCost($helpReq->getHelpCategory(), $helpOffer->getHelpCategory());
+					} else {
+						$this->matrix[$i][$j++] = self::HIGH_COST;
+					}
 				}
 			}
-
 			$i++;
 		}
 
 		return $this->matrix;
 	}
 
-	public function custom_hungarian($matrix = [])
+	/**
+	 * Implements of the hungarian method for the assignment problem
+	 *
+	 * @param array $matrix
+	 * @return array
+	 */
+	private function execCustomHungarian($matrix = [])
 	{
 		if(empty($matrix)){
 			$matrix = $this->matrix;
@@ -124,15 +211,15 @@ class ScheduleGenerator {
 		$h = count($matrix);
 		$w = count($matrix[0]);
 		// If the input matrix isn't square, make it square
-		// and fill the empty values with the INF, here 9999999
+		// and fill the empty values with the INF, here HIGH_COST = 9999999
 		if ($h < $w) {
 			for ($i = $h; $i < $w; ++$i) {
-				$matrix[$i] = array_fill(0, $w, 999999);
+				$matrix[$i] = array_fill(0, $w, self::HIGH_COST);
 			}
 		} elseif ($w < $h) {
 			foreach ($matrix as &$row) {
 				for ($i = $w; $i < $h; ++$i) {
-					$row[$i] = 999999;
+					$row[$i] = self::HIGH_COST;
 				}
 			}
 		}
@@ -142,7 +229,7 @@ class ScheduleGenerator {
 		$ind = array_fill(0, $w, -1);
 		foreach (range(0, $h - 1) as $i) {
 			$links   = array_fill(0, $w, -1);
-			$mins    = array_fill(0, $w, 999999);
+			$mins    = array_fill(0, $w, self::HIGH_COST);
 			$visited = array_fill(0, $w, false);
 			$markedI = $i;
 			$markedJ = -1;
@@ -195,4 +282,28 @@ class ScheduleGenerator {
 		}
 		return $result;
 	}
-} 
+
+
+	/**
+	 * Compute and return the planning as an array where the columns correspond to help request
+	 * and rows to help offer requests
+	 *
+	 * @return array
+	 */
+	public function getPlanning(){
+		$this->createCostMatrix();
+		$data = $this->execCustomHungarian();
+		$result = [];
+		$userRepo = $this->entityManager->getRepository('ElskModelBundle:User');
+		foreach($this->volunteerMap as $i => $offerId){
+			$user = $userRepo->find($offerId);
+			if(isset($this->recipientMap[$data[$i]])){
+				$result[$user->getFirstName()] = $userRepo->find($this->recipientMap[$data[$i]])->getFirstName();
+			} else {
+				$result[$user->getFirstName()] = 'NA';
+			}
+		}
+
+		return $result;
+	}
+}

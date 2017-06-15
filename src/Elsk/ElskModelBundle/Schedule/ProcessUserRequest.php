@@ -39,7 +39,7 @@ class ProcessUserRequest {
 	 * need to column in the help to tag the offer that can matches it. otherwise this is irrelevant to matching algo
 	 * and therefore need to deleted
 	 */
-	const HELP_MATCH = [
+	private  $HELP_MATCH = [
 		'artisanal' => [
 			'Cleaning inside',
 			'Cleanup in',
@@ -118,6 +118,30 @@ class ProcessUserRequest {
 		} //todo throw exception for user not found
 	}
 
+	public function assignHelpReqCat(HelpRequest $helpRequest){
+		if($helpRequest){
+			if($helpRequest->requireSpecialAbility()){
+				$helpRequest->setHelpCategory(self::HELP_CAT_YELLOW);
+			} else {
+				$helpRequest->setHelpCategory(self::HELP_CAT_GREEN);
+			}
+			$this->entityManager->persist($helpRequest);
+			$this->entityManager->flush();
+		}
+	}
+
+	public function assignHelpOfferCat(HelpOffer $helpOffer){
+		if($helpOffer){
+			if($helpOffer->canBeYellowCategory()){
+				$helpOffer->setHelpCategory(self::HELP_CAT_YELLOW);
+			} else {
+				$helpOffer->setHelpCategory(self::HELP_CAT_GREEN);
+			}
+			$this->entityManager->persist($helpOffer);
+			$this->entityManager->flush();
+		}
+	}
+
 	/**
 	 * Get the end date of the last help event organised
 	 *
@@ -136,17 +160,6 @@ class ProcessUserRequest {
 			->getQuery();
 
 		return $query->getOneOrNullResult();
-		/*){
-			return $result;
-		}else{
-			$count = $queryBuilder->select('count(e.id)') // string 'u' is converted to array internally
-				->from('ElskModelBundle:HelpEvent', 'e')
-				->getQuery()
-				->getSingleScalarResult();
-			if($count === 1) {
-				return
-			}
-		}*/
 	}
 
 	/**
@@ -155,36 +168,21 @@ class ProcessUserRequest {
 	 */
 	private function getLastUserResquest(User $user){
 		$requestTable = '';
-		if($user->getUserType() === User::USER_TYPE['2']){
+		if($user->getUserType() === User::USER_TYPE[2]){
 			$requestTable = 'ElskModelBundle:HelpRequest';
 		}
-		if($user->getUserType() === User::USER_TYPE['3']){
+
+		if($user->getUserType() === User::USER_TYPE[3]){
 			$requestTable = 'ElskModelBundle:HelpOffer';
 		}
 
-/*		$queryBuilder = $this->entityManager->createQueryBuilder();
-		$queryBuilder->select(['r'])->from($requestTable, 'r')
-			->where('r.user = ?1');
-
-		//if there is at least one event organised so far, we only consider request after the most recent
-		// organised event
-
-		if($lastEndDate = $this->getLastEventEndDate($user->getElskCity())){
-			$queryBuilder->andWhere($queryBuilder->expr()->gt('r.requestDate', '?2'))
-				->setParameter(1, $user->getId())
-				->setParameter(2, $lastEndDate->getEndDate());
-		}
-		$query = $queryBuilder->orderBy('r.requestDate', 'DESC')
-			->setMaxResults(1)
-			->getQuery();
-		$id = $user->getId();*/
 		$ed = $this->getLastEventEndDate($user->getElskCity())
 			->getEndDate()
 			->format('Y-m-d');
-		//Debug::dump($ed);
+
 		$q = $this->entityManager
 			->createQuery("SELECT r FROM {$requestTable} r JOIN r.user a WHERE (a.id = {$user->getId()} AND r.requestDate <= '{$ed}')");
-		//Debug::dump($q->getSql());
+
 		$r = $q->getSingleResult(); // $query->getOneOrNullResult();
 		if($r){
 			return $r;
@@ -207,9 +205,7 @@ class ProcessUserRequest {
 			->toArray();
 
 		foreach($helpRequeted as $request){
-			if($request != self::HELP_MATCH['moving'] &&
-				$request != self::HELP_MATCH['computer'] &&
-				$request != self::HELP_MATCH['painting']) {
+			if(($request != $this->HELP_MATCH['moving']) && ($request != $this->HELP_MATCH['computer']) && ($request != $this->HELP_MATCH['painting'])) {
 				return true;
 			} else{
 				if(in_array($request, $offerNames)){

@@ -14,18 +14,12 @@ class ScheduleController extends Controller{
 	const MYSQL_DATE_FORMAT = 'Y-m-d';
 
 	public function indexAction(){
-	/*	$em = $this->getDoctrine()->getManager();
-		$uc = new ProcessUserRequest($em);
-		$uc->assignCategory(2);*/
-		/*$s = new ScheduleGenerator();
-		$data = $s->custom_hungarian();*/
 		$em = $this->getDoctrine()->getManager();
 		$uc = new ProcessUserRequest($em);
-		$he = $em->getRepository('ElskModelBundle:HelpEvent')->find(1);
+		//get the help
+		$he = $em->getRepository('ElskModelBundle:HelpEvent')->find(2);
 		$sg = new ScheduleGenerator($he, $uc, $em);
-		//$data = $sg->getAllEventHelpRequest();
-		$data = $sg->createCostMatrix();
-		VarDumper::dump($data);
+		$planing = $sg->getPlanning();
 		$response = new JsonResponse("");
 
 		return $response;
