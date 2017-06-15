@@ -1,3 +1,4 @@
+# app/config/routing.yml
 NelmioApiDocBundle:
   resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
   prefix:   /api/doc
@@ -5,3 +6,28 @@ NelmioApiDocBundle:
 schedule:
     path:      /schedule
     defaults:  { _controller: ElskCoreBundle:Schedule:index }
+
+getUser:
+    path:      /getUser/{email}
+    defaults:  { _controller: ElskCoreBundle:User:getUser }
+    methods:  [GET]
+    
+registerRecipient:
+    path:      /register/recipient
+    defaults:  { _controller: ElskCoreBundle:User:registerRecipient }
+    methods:  [POST]
+
+registerVolunteer:
+    path:      /register/volunteer
+    defaults:  { _controller: ElskCoreBundle:User:registerVolunteer }
+    methods:  [POST]
+
+registerLocalAdmin:
+    path:      /admin/register/localAdmin
+    defaults:  { _controller: ElskCoreBundle:User:registerLocalAdmin }
+    methods:  [POST]
+
+registerGlobalAdmin:
+    path:      /admin/register/globalAdmin
+    defaults:  { _controller: ElskCoreBundle:User:registerGlobalAdmin }
+    methods:  [POST]
