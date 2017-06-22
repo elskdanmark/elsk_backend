@@ -57,13 +57,13 @@ Elsk\ElskModelBundle\Entity\User:
             type: boolean
             nullable: false
             column: is_active
-        userType:
+        type:
             type: string
             nullable: false
             length: 30
             options:
                 fixed: false
-            column: user_type
+            column: type
         role:
             type: string
             nullable: false

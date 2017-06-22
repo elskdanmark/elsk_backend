@@ -57,7 +57,7 @@ class UserController extends Controller {
 			$user->setFirstName($firstName);
 			$user->setLastName($lastName);
 			$user->setPhone($phone);
-			$user->setUserType($type);
+			$user->setType($type);
 			$user->setElskCity($city);
 			$user->setElskCity($city);
 			$user->setCreatedAt(new \DateTime());

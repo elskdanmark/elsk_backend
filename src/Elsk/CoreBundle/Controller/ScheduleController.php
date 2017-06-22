@@ -20,7 +20,7 @@ class ScheduleController extends Controller{
 		$he = $em->getRepository('ElskModelBundle:HelpEvent')->find(2);
 		$sg = new ScheduleGenerator($he, $uc, $em);
 		$planing = $sg->getPlanning();
-		$response = new JsonResponse("");
+		$response = new JsonResponse($planing);
 
 		return $response;
 	}

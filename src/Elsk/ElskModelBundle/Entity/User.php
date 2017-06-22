@@ -54,7 +54,7 @@ class User extends Timestampable implements UserInterface, \Serializable
     /**
      * @var string
      */
-    private $userType;
+    private $type;
 
 	/**
 	 * @var string
@@ -74,17 +74,17 @@ class User extends Timestampable implements UserInterface, \Serializable
 	/**
 	 * Constructor
 	 *
-	 * @param $userType
+	 * @param $type
 	 */
-    public function __construct($userType)
+    public function __construct($type)
     {
 	    parent::__construct();
         $this->emailGroup = new ArrayCollection();
 	    $this->isActive = true;
-	    $this->role = (in_array($userType, self::USER_TYPE) && ($userType === self::USER_TYPE[0] ||  $userType ===
-    self::USER_TYPE[1]))? 'ROLE_'.$userType :
+	    $this->role = (in_array($type, self::USER_TYPE) &&
+		    ($type === self::USER_TYPE[0] ||  $type === self::USER_TYPE[1]))? 'ROLE_'.$type :
 	    'ROLE_USER';
-	    $this->userType = $userType;
+	    $this->type = $type;
     }
 
     /**
@@ -232,27 +232,27 @@ class User extends Timestampable implements UserInterface, \Serializable
     }
 
     /**
-     * Set userType
+     * Set type
      *
      * @param string $userType
      *
      * @return User
      */
-    public function setUserType($userType)
+    public function setType($userType)
     {
-        $this->userType = $userType;
+        $this->type = $userType;
 
         return $this;
     }
 
     /**
-     * Get userType
+     * Get type
      *
      * @return string
      */
-    public function getUserType()
+    public function getType()
     {
-        return $this->userType;
+        return $this->type;
     }
 
     /**

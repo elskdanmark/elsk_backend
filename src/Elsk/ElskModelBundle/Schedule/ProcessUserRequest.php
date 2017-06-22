@@ -86,7 +86,7 @@ class ProcessUserRequest {
 		$user = $userRepository->find($userId);
 
 		if($user && $user instanceof User){
-			switch($user->getUserType()){
+			switch($user->getType()){
 				case 'RECIPIENT' :
 					$userHelpRequest = $this->getLastUserResquest($user);
 					if($userHelpRequest instanceof HelpRequest){
@@ -168,11 +168,11 @@ class ProcessUserRequest {
 	 */
 	private function getLastUserResquest(User $user){
 		$requestTable = '';
-		if($user->getUserType() === User::USER_TYPE[2]){
+		if($user->getType() === User::USER_TYPE[2]){
 			$requestTable = 'ElskModelBundle:HelpRequest';
 		}
 
-		if($user->getUserType() === User::USER_TYPE[3]){
+		if($user->getType() === User::USER_TYPE[3]){
 			$requestTable = 'ElskModelBundle:HelpOffer';
 		}
 

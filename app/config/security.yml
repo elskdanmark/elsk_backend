@@ -20,15 +20,15 @@ security:
             pattern:  ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        login:
-            security: false
-    access_control:
-        - { path: ^/admin/register, role: ROLE_GLOBAL_ADMIN }
-        - { path: ^/admin, role: ROLE_LOCAL_ADMIN }
-
         wsse_secured:
-            pattern:    ^/
+            pattern:    !^/schedule
             host:       api\.elsk\.dev
             stateless: true
             wsse:      true
 
+        login:
+            security: false
+
+    access_control:
+        - { path: ^/admin/register, role: ROLE_GLOBAL_ADMIN }
+        - { path: ^/admin, role: ROLE_LOCAL_ADMIN }
