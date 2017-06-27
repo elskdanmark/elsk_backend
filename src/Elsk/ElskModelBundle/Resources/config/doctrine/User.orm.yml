@@ -1,5 +1,6 @@
 Elsk\ElskModelBundle\Entity\User:
     type: entity
+    repositoryClass: Elsk\ElskModelBundle\Repository\UserRepository
     table: user
     uniqueConstraints:
         city_id:

@@ -7,6 +7,11 @@ schedule:
     path:      /schedule
     defaults:  { _controller: ElskCoreBundle:Schedule:index }
 
+userList:
+    path:      /users
+    defaults:  { _controller: ElskCoreBundle:User:index }
+    methods:  [GET]
+
 getUser:
     path:      /getUser/{email}
     defaults:  { _controller: ElskCoreBundle:User:getUser }

@@ -1,18 +1,52 @@
-<?php namespace Elsk\CoreBundle\Controller;
+<?php
 
+namespace Elsk\CoreBundle\Controller;
+
+use Doctrine\Common\Util\Debug;
+use Elsk\ElskModelBundle\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Elsk\ElskModelBundle\Entity\User;
+use Symfony\Component\VarDumper\VarDumper;
 
 class UserController extends Controller {
+
+	public function indexAction(Request $request){
+		$type = $request->query->get('type');
+
+		$users = (empty($type))? $this->getUserRepo()->getAll() : $this->getUserRepo()->getAllByUserType($type);
+
+		return new JsonResponse(['data' => $this->serializeResponse($users)]);
+	}
+
 	public function showAction(){
 
-		return new JsonResponse(["data" => ['name' => 'John Doe']]);
+		$users = $this->getUserRepo()
+		              ->getAll();
+		$serializer = $this->serializeResponse($users);
+		return new JsonResponse(['data' => $serializer->serialize($users, 'json')]);
+
+		return new JsonResponse([
+			"data" => [
+				[
+					'id' => 1,
+					'firstName' => 'John Doe'
+				],
+				[
+					'id' => 2,
+					'firstName' => 'Jane Doe'
+				]
+			]
+		]);
 	}
   
-	public function getUserAction(){
-		return JsonResponse($this->getDoctrine()->getManager()->getRepository('Elsk:ElskModelBundle:Entity:User')->findOneBy(["email"=>$request->request->get('email')]));
+	public function getUserAction($email){
+		$user = $this->getDoctrine()->getManager()->getRepository('ElskModelBundle:User')->findOneBy(["email" => $email]);
+		$serializer = $this->container->get('serializer');
+		return new JsonResponse($serializer->serialize($user, 'json'));
+		return new JsonResponse($this->getDoctrine()->getManager()->getRepository('ElskModelBundle:User')->findOneBy(["email"=>$email]));
 	}
 
 	public function registerRecipientAction(Request $request){
@@ -73,4 +107,25 @@ class UserController extends Controller {
 		}else
 			return new Response("Most specify, email, password, firstName, lastName and elskCity");
 	}
+
+	/**
+	 * @return UserRepository
+	 */
+	private function getUserRepo()
+	{
+		return $this->getDoctrine()
+		            ->getRepository('ElskModelBundle:User');
+	}
+
+	/**
+	 * @param $data
+	 * @return object
+	 */
+	private function serializeResponse($data)
+	{
+		$serializer = $this->container->get('serializer');
+		return $serializer->serialize($data, 'json');
+	}
+
+
 }

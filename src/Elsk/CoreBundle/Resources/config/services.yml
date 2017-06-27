@@ -11,3 +11,9 @@ services:
         class: Elsk\CoreBundle\Security\Firewall\WsseListener
         arguments: ['@security.token_storage', '@security.authentication.manager']
         public: false
+
+    elsk.UserRepository:
+        class: Elsk\ElskModelBundle\Repository\UserRepository
+        factory: ['@doctrine', getRepository]
+        arguments:
+            - 'Elsk\ElskModelBundle\Entity\User'
